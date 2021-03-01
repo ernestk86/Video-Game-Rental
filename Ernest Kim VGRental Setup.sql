@@ -1,0 +1,169 @@
+--SHOW search_path;
+SET search_path = vg_rentals;
+
+--DROP SCHEMA IF EXISTS vg_rentals;
+--CREATE SCHEMA vg_rentals;
+
+--DROP TYPE IF EXISTS CONSOLES;
+--CREATE TYPE CONSOLES AS ENUM (
+--  'NES',
+--  'SNES',
+--  'N64',
+--  'GAMECUBE',
+--  'WII',
+--  'WIIU',
+--  'SWITCH',
+--  'GAMEBOY',
+--  'GBA',
+--  'NDS',
+--  'N3DS',
+--  'MASTERSYSTEM',
+--  'GENESIS',
+--  'SEGACD',
+--  'SATURN',
+--  'DREAMCAST',
+--  'GAMEGEAR',
+--  'ATARI2600',
+--  'JAGUAR',
+--  'PSX',
+--  'PS2',
+--  'PS3',
+--  'PS4',
+--  'PS5',
+--  'PSP',
+--  'PSVita',
+--  'XBOX',
+--  'XBOX360',
+--  'XBOXONE',
+--  'XBOXSERIES',
+--  'PC'
+--);
+
+--DROP TYPE IF EXISTS GENRE;
+--CREATE TYPE GENRE AS ENUM (
+--  'ACTION_ADVENTURE',
+--  'ROLE_PLAYING',
+--  'STRATEGY',
+--  'FIRST_PERSON_SHOOTER',
+--  'VISUAL_NOVEL',
+--  'SPORTS',
+--  'SIMULATION',
+--  'PUZZLE',
+--  'PARTY',
+--  'HORROR',
+--  'MOBA',
+--  'RHYTHM',
+--  'BATTLE_ROYALE',
+--  'FIGHTING'
+--);
+
+--DROP TYPE IF EXISTS STATES;
+--CREATE TYPE STATES AS ENUM (
+--	'AL',
+--	'AK',
+--	'AZ',
+--	'AR',
+--	'CA',
+--	'CO',
+--	'CT',
+--	'DE',
+--	'FL',
+--	'GA',
+--	'HI',
+--	'ID',
+--	'IL',
+--	'IN',
+--	'IA',
+--	'KS',
+--	'KY',
+--	'LA',
+--	'ME',
+--	'MD',
+--	'MA',
+--	'MI',
+--	'MN',
+--	'MS',
+--	'MO',
+--	'MT',
+--	'NE',
+--	'NV',
+--	'NH',
+--	'NJ',
+--	'NM',
+--	'NY',
+--	'NC',
+--	'ND',
+--	'OH',
+--	'OK',
+--	'OR',
+--	'PA',
+--	'RI',
+--	'SC',
+--	'SD',
+--	'TN',
+--	'TX',
+--	'UT',
+--	'VT',
+--	'VA',
+--	'WA',
+--	'WV',
+--	'WI',
+--	'WY'
+--);
+
+--DROP TABLE IF EXISTS Users;
+--CREATE TABLE Users (
+--  id SERIAL UNIQUE PRIMARY KEY NOT NULL,
+--  username varchar(100) NOT NULL,
+--  password varchar(100) NOT NULL,
+--  Date_Of_Birth date CHECK (date_part('year', age(Date_Of_Birth)) > 17) NOT NULL,
+--  address varchar(100) NOT NULL,
+--  city varchar(100) NOT NULL,
+--  state STATES NOT NULL,
+--  zip_code numeric CHECK (zip_code < 100000 AND zip_code > 9999) NOT NULL
+--);
+
+--ALTER TABLE users DROP COLUMN zip_code;
+--ALTER TABLE users ADD COLUMN zip_code numeric CHECK (zip_code < 100000 AND zip_code > 9999) NOT NULL;
+
+--DROP TABLE IF EXISTS reviews
+--CREATE TABLE reviews (
+--  id SERIAL UNIQUE PRIMARY KEY NOT NULL,
+--  game_id int NOT NULL,
+--  rating numeric CHECK (rating < 11 AND rating > 0) NOT NULL,
+--  review varchar(1000) DEFAULT 'No comment'
+--);
+
+--ALTER TABLE reviews DROP COLUMN rating;
+--ALTER TABLE reviews ADD COLUMN rating numeric CHECK (rating < 11 AND rating > 0) NOT NULL;
+
+--DROP TABLE IF EXISTS games;
+--CREATE TABLE games (
+--  id SERIAL UNIQUE PRIMARY KEY NOT NULL,
+--  name varchar(200) NOT NULL,
+--  genre GENRE NOT NULL,
+--  console CONSOLES NOT NULL,
+--  publisher varchar(100) DEFAULT 'Unknown',
+--  developer varchar(100) DEFAULT 'Unknown',
+--  year_Released numeric CHECK (year_released <= date_part('Year', current_timestamp) AND year_released > 1971) DEFAULT 1972 NOT NULL,
+--  multiplayer boolean DEFAULT false,
+--  available boolean DEFAULT true
+--);
+
+--ALTER TABLE games DROP COLUMN year_released;
+--ALTER TABLE games ADD COLUMN year_released numeric CHECK (year_released <= date_part('Year', current_timestamp) AND year_released > 1971) DEFAULT 1972 NOT NULL;
+
+--DROP TABLE IF EXISTS Rentals;
+--CREATE TABLE Rentals (
+--  User_ID int NOT NULL,
+--  Game_ID int NOT NULL,
+--  due_date date CHECK (due_date > current_date AND due_date <= current_date + 14) DEFAULT current_date + 14 NOT NULL,
+--  overdue boolean DEFAULT false
+--);
+
+--ALTER TABLE rentals DROP COLUMN due_date;
+--ALTER TABLE rentals ADD COLUMN due_date date CHECK (due_date > current_date AND due_date <= current_date + 14) DEFAULT current_date + 14 NOT NULL;
+
+--ALTER TABLE rentals ADD FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;
+--ALTER TABLE rentals ADD FOREIGN KEY (game_id) REFERENCES games (id) ON DELETE CASCADE;
+--ALTER TABLE reviews ADD FOREIGN KEY (game_id) REFERENCES games (id) ON DELETE CASCADE;
